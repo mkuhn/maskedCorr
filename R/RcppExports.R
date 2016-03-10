@@ -8,7 +8,13 @@
 #' @param mask Mask, each bit that is set will be included in the correlation
 #' @param mask_ranges List of start, end tuples for each of the mask groups
 #' @return The Pearson correlation between the designated parts of the input vectors
+#' @export
 masked_corr <- function(v1, v2, mask, mask_ranges) {
     .Call('maskedCorr_masked_corr', PACKAGE = 'maskedCorr', v1, v2, mask, mask_ranges)
+}
+
+#' Test if any bit in the input masks is set exactly once
+contains_singletons <- function(vs, N_bits) {
+    .Call('maskedCorr_contains_singletons', PACKAGE = 'maskedCorr', vs, N_bits)
 }
 

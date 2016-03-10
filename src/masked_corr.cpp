@@ -8,6 +8,7 @@ using namespace Rcpp;
 //' @param mask Mask, each bit that is set will be included in the correlation
 //' @param mask_ranges List of start, end tuples for each of the mask groups
 //' @return The Pearson correlation between the designated parts of the input vectors
+//' @export
 // [[Rcpp::export]]
 double masked_corr(NumericVector v1, NumericVector v2, int mask, List mask_ranges) {
 

@@ -1,4 +1,3 @@
-library(maskedCorr)
 context("Mask initialization")
 
 test_that("successful mask detection", {
