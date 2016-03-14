@@ -1,4 +1,3 @@
-library(maskedCorr)
 context("Masked correlations")
 
 set.seed(42)
@@ -17,11 +16,18 @@ test_that("unsuccessful masked correlation", {
   expect_error( masked_corr(v1, v2, 3, list("A", "B")) )
 })
 
-test_that("successful computing all masked correlations", {
+test_that("successful computing all pairwise masked correlations", {
   expect_equal( all_pairwise_correlations(v1, v2, 3, 3, list(c(1,5), c(6,10))),
                 c(cor(v1[1:5], v2[1:5]), cor(v1[6:10], v2[6:10]), cor(v1, v2)) )
 
   expect_equal( all_pairwise_correlations(v1, v2, 1, 3, list(c(1,5), c(6,10))),
                 c(cor(v1[1:5], v2[1:5]), NA, NA) )
 })
+
+
+test_that("successful computing all pairwise masked correlations", {
+  expect_equal( all_correlations( list(v1, v2), list(c(1,5), c(6,10))),
+                 NULL)
+})
+
 
