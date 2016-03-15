@@ -22,17 +22,30 @@ all_pairwise_correlations <- function(v1, v2, m1, m2, mask_ranges) {
 }
 
 
-
-mean_correlation_for_mask_set <- function(N, mask, correlations) {
+#' Given a precomputed matrix of masked correlations, gather correlations
+#' for the specified mask set.
+#'
+#' @param masks vector of masks (length N) from which to take correlations
+#' @param correlations NxN matrix of correlations, where each matrix element is a vector
+#'  with entries for each masked correlation
+#' @return A list of two elements: the average correlation, and a sorted vector
+#'  of the encountered combination of masks. It is possible that the given masks and
+#'  correlations are partially not compatible, Then, the average will be computed
+#'  based on those mask combinations that contain a correlation. (E.g. in the mask triple
+#'  "A, AB, B" the average will be computed from two correlations (A/A, B/B), as it is
+#'  not possible to calculate a correlation between A and B.)
+mean_correlation_for_mask_set <- function(masks, correlations) {
   count <- 0
   corr_sum <- 0
+
+  N <- length(masks)
 
   mask_combinations <- integer(N*(N-1)/2)
 
   for (i in 1:(N-1)) {
-    target1 <- mask[i]
+    target1 <- masks[i]
     for (j in (i+1):N) {
-      target2 <- mask[j]
+      target2 <- masks[j]
       target <- bitwAnd(target1, target2)
 
       if (target > 0) {
@@ -51,7 +64,11 @@ mean_correlation_for_mask_set <- function(N, mask, correlations) {
 }
 
 
-
+#' Compute correlations for all possible mask combinations given the input vectors.
+#'
+#' @param vs Input vectors
+#' @param mask_ranges List of start, end tuples for each of the mask groups
+#' @return A dictionary of mask combinations and the respective correlations.
 all_correlations <- function(vs, mask_ranges) {
   N <- length(vs)
   Nbits <- length(mask_ranges)
@@ -66,21 +83,17 @@ all_correlations <- function(vs, mask_ranges) {
     }
   }
 
-  mask <- increment_mask(rep(0, N), Nmax_mask)
+  masks <- rep(0, N)
 
-  while (!is.na(mask[1])) {
+  d <- dict::numvecdict()
 
-    if (!contains_singletons(mask, Nbits)) {
-      l <- mean_correlation_for_mask_set(N, mask, correlations)
-
-      if (!is.null(l)) {
-        print("-----")
-        print(mask)
-        print(l)
-      }
-    }
-
-    mask <- increment_mask(mask, Nmax_mask)
+  while (!is.na((masks <- increment_mask(masks, Nmax_mask))[1])) {
+    if (contains_singleton(masks, Nbits)) next
+    l <- mean_correlation_for_mask_set(masks, correlations)
+    if (is.null(l)) next
+    d$append_number(l$mask_combinations, l$average)
   }
+
+  d$means()
 }
 
