@@ -19,15 +19,27 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// contains_singletons
-bool contains_singletons(IntegerVector vs, int N_bits);
-RcppExport SEXP maskedCorr_contains_singletons(SEXP vsSEXP, SEXP N_bitsSEXP) {
+// contains_singleton
+bool contains_singleton(IntegerVector vs, int N_bits);
+RcppExport SEXP maskedCorr_contains_singleton(SEXP vsSEXP, SEXP N_bitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< IntegerVector >::type vs(vsSEXP);
     Rcpp::traits::input_parameter< int >::type N_bits(N_bitsSEXP);
-    __result = Rcpp::wrap(contains_singletons(vs, N_bits));
+    __result = Rcpp::wrap(contains_singleton(vs, N_bits));
+    return __result;
+END_RCPP
+}
+// count_set_bits
+int count_set_bits(IntegerVector vs, int N_bits);
+RcppExport SEXP maskedCorr_count_set_bits(SEXP vsSEXP, SEXP N_bitsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type vs(vsSEXP);
+    Rcpp::traits::input_parameter< int >::type N_bits(N_bitsSEXP);
+    __result = Rcpp::wrap(count_set_bits(vs, N_bits));
     return __result;
 END_RCPP
 }

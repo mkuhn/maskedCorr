@@ -14,7 +14,12 @@ masked_corr <- function(v1, v2, mask, mask_ranges) {
 }
 
 #' Test if any bit in the input masks is set exactly once
-contains_singletons <- function(vs, N_bits) {
-    .Call('maskedCorr_contains_singletons', PACKAGE = 'maskedCorr', vs, N_bits)
+contains_singleton <- function(vs, N_bits) {
+    .Call('maskedCorr_contains_singleton', PACKAGE = 'maskedCorr', vs, N_bits)
+}
+
+#' count the number of bits set
+count_set_bits <- function(vs, N_bits) {
+    .Call('maskedCorr_count_set_bits', PACKAGE = 'maskedCorr', vs, N_bits)
 }
 
