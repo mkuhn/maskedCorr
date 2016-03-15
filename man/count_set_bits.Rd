@@ -4,7 +4,7 @@
 \alias{count_set_bits}
 \title{count the number of bits set}
 \usage{
-count_set_bits(vs, N_bits)
+count_set_bits(vs)
 }
 \description{
 count the number of bits set

@@ -97,3 +97,17 @@ all_correlations <- function(vs, mask_ranges) {
   d$means()
 }
 
+#' Find mask with most keys set
+#'
+#' @param masks List of masks
+#' @return The items with the most set bits. Will raise an error if more
+#'  than one items have the same number of set bits
+which.most_set_bits <- function(masks) {
+  counts <- sapply(masks, count_set_bits)
+  m <- max(counts)
+  result <- which(counts == m)
+  if (length(result) > 1) stop(paste(length(result), "items have", m, "set bits!"))
+  result
+}
+
+

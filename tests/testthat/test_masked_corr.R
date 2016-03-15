@@ -63,4 +63,8 @@ test_that("successfully computing all pairwise masked correlations", {
   )
 })
 
+test_that("finding mask with most set bits", {
+  expect_equal( which.most_set_bits(list( c(1,2,3), c(1,0,0) )), 1 )
+  expect_error( which.most_set_bits(list( c(0,1,0), c(1,0,0) )) )
+})
 

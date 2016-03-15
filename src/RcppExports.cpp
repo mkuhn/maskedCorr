@@ -32,14 +32,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // count_set_bits
-int count_set_bits(IntegerVector vs, int N_bits);
-RcppExport SEXP maskedCorr_count_set_bits(SEXP vsSEXP, SEXP N_bitsSEXP) {
+int count_set_bits(IntegerVector vs);
+RcppExport SEXP maskedCorr_count_set_bits(SEXP vsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< IntegerVector >::type vs(vsSEXP);
-    Rcpp::traits::input_parameter< int >::type N_bits(N_bitsSEXP);
-    __result = Rcpp::wrap(count_set_bits(vs, N_bits));
+    __result = Rcpp::wrap(count_set_bits(vs));
     return __result;
 END_RCPP
 }

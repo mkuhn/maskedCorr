@@ -19,7 +19,7 @@ contains_singleton <- function(vs, N_bits) {
 }
 
 #' count the number of bits set
-count_set_bits <- function(vs, N_bits) {
-    .Call('maskedCorr_count_set_bits', PACKAGE = 'maskedCorr', vs, N_bits)
+count_set_bits <- function(vs) {
+    .Call('maskedCorr_count_set_bits', PACKAGE = 'maskedCorr', vs)
 }
 
