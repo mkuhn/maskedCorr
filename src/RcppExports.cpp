@@ -42,3 +42,53 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// masks_to_int
+int masks_to_int(IntegerVector masks, int bits_per_mask);
+RcppExport SEXP maskedCorr_masks_to_int(SEXP masksSEXP, SEXP bits_per_maskSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type masks(masksSEXP);
+    Rcpp::traits::input_parameter< int >::type bits_per_mask(bits_per_maskSEXP);
+    __result = Rcpp::wrap(masks_to_int(masks, bits_per_mask));
+    return __result;
+END_RCPP
+}
+// int_to_masks
+IntegerVector int_to_masks(int int_masks, int bits_per_mask, int N_masks);
+RcppExport SEXP maskedCorr_int_to_masks(SEXP int_masksSEXP, SEXP bits_per_maskSEXP, SEXP N_masksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< int >::type int_masks(int_masksSEXP);
+    Rcpp::traits::input_parameter< int >::type bits_per_mask(bits_per_maskSEXP);
+    Rcpp::traits::input_parameter< int >::type N_masks(N_masksSEXP);
+    __result = Rcpp::wrap(int_to_masks(int_masks, bits_per_mask, N_masks));
+    return __result;
+END_RCPP
+}
+// increment_mask
+IntegerVector increment_mask(IntegerVector mask, int N_bits, bool skip_singletons, bool skip_zeros);
+RcppExport SEXP maskedCorr_increment_mask(SEXP maskSEXP, SEXP N_bitsSEXP, SEXP skip_singletonsSEXP, SEXP skip_zerosSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type mask(maskSEXP);
+    Rcpp::traits::input_parameter< int >::type N_bits(N_bitsSEXP);
+    Rcpp::traits::input_parameter< bool >::type skip_singletons(skip_singletonsSEXP);
+    Rcpp::traits::input_parameter< bool >::type skip_zeros(skip_zerosSEXP);
+    __result = Rcpp::wrap(increment_mask(mask, N_bits, skip_singletons, skip_zeros));
+    return __result;
+END_RCPP
+}
+// masks_to_target
+IntegerVector masks_to_target(IntegerVector masks);
+RcppExport SEXP maskedCorr_masks_to_target(SEXP masksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type masks(masksSEXP);
+    __result = Rcpp::wrap(masks_to_target(masks));
+    return __result;
+END_RCPP
+}

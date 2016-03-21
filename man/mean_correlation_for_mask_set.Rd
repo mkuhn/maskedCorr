@@ -5,13 +5,18 @@
 \title{Given a precomputed matrix of masked correlations, gather correlations
 for the specified mask set.}
 \usage{
-mean_correlation_for_mask_set(masks, correlations)
+mean_correlation_for_mask_set(masks, correlations, Nbits, masks_filter = NULL)
 }
 \arguments{
 \item{masks}{vector of masks (length N) from which to take correlations}
 
 \item{correlations}{NxN matrix of correlations, where each matrix element is a vector
 with entries for each masked correlation}
+
+\item{Nbits}{optional: number of bits, must be supplied if masks_filter is given}
+
+\item{masks_filter}{optional: set of masks (of the comparison, not the input mask) for which
+to return correlations, supply as integer-encoded mask (not as vector)}
 }
 \value{
 A list of two elements: the average correlation, and a sorted vector

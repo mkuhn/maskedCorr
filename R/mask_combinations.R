@@ -28,25 +28,32 @@ all_pairwise_correlations <- function(v1, v2, m1, m2, mask_ranges) {
 #' @param masks vector of masks (length N) from which to take correlations
 #' @param correlations NxN matrix of correlations, where each matrix element is a vector
 #'  with entries for each masked correlation
+#' @param masks_filter optional: set of masks (of the comparison, not the input mask) for which
+#'  to return correlations, supply as integer-encoded mask (not as vector)
+#' @param Nbits optional: number of bits, must be supplied if masks_filter is given
 #' @return A list of two elements: the average correlation, and a sorted vector
 #'  of the encountered combination of masks. It is possible that the given masks and
 #'  correlations are partially not compatible, Then, the average will be computed
 #'  based on those mask combinations that contain a correlation. (E.g. in the mask triple
 #'  "A, AB, B" the average will be computed from two correlations (A/A, B/B), as it is
 #'  not possible to calculate a correlation between A and B.)
-mean_correlation_for_mask_set <- function(masks, correlations) {
+mean_correlation_for_mask_set <- function(masks, correlations, Nbits, masks_filter = NULL) {
   count <- 0
   corr_sum <- 0
 
   N <- length(masks)
 
-  mask_combinations <- integer(N*(N-1)/2)
+  mask_combinations <- masks_to_target(masks)
+  sorted_mask_combinations <- masks_to_int(sort(mask_combinations), Nbits)
 
+  if (!is.null(masks_filter) && !(sorted_mask_combinations %in% masks_filter))
+    return()
+
+  bit <- 1
   for (i in 1:(N-1)) {
-    target1 <- masks[i]
     for (j in (i+1):N) {
-      target2 <- masks[j]
-      target <- bitwAnd(target1, target2)
+      target <- mask_combinations[bit]
+      bit <- bit+1
 
       if (target > 0) {
         count <- count + 1
@@ -60,7 +67,7 @@ mean_correlation_for_mask_set <- function(masks, correlations) {
 
   if (count == 0) return()
 
-  list(average = corr_sum / count, mask_combinations = sort(mask_combinations))
+  list(average = corr_sum / count, mask_combinations = sorted_mask_combinations)
 }
 
 
@@ -68,11 +75,14 @@ mean_correlation_for_mask_set <- function(masks, correlations) {
 #'
 #' @param vs Input vectors
 #' @param mask_ranges List of start, end tuples for each of the mask groups
+#' @param masks_filter optional: set of masks (of the comparison, not the input mask) for which
+#'  to return correlations, supply as integer-encoded mask (not as vector)
 #' @return A dictionary of mask combinations and the respective correlations.
-all_correlations <- function(vs, mask_ranges) {
+#' @export
+all_correlations <- function(vs, mask_ranges, masks_filter = NULL) {
   N <- length(vs)
   Nbits <- length(mask_ranges)
-  Nmax_mask <- 2**Nbits
+
   ms <- sapply(vs, detect_mask, mask_ranges = mask_ranges)
 
   correlations <- matrix(list(), nrow=N, ncol=N)
@@ -83,18 +93,51 @@ all_correlations <- function(vs, mask_ranges) {
     }
   }
 
-  masks <- rep(0, N)
+  masks <- rep(1, N)
 
   d <- dict::numvecdict()
 
-  while (!is.na((masks <- increment_mask(masks, Nmax_mask))[1])) {
-    if (contains_singleton(masks, Nbits)) next
-    l <- mean_correlation_for_mask_set(masks, correlations)
-    if (is.null(l)) next
-    d$append_number(l$mask_combinations, l$average)
+  while (1) {
+    l <- mean_correlation_for_mask_set(masks, correlations, Nbits, masks_filter)
+    if (!is.null(l)) {
+      d$append_number(l$mask_combinations, l$average)
+    }
+    masks <- increment_mask(masks, Nbits, T, T)
+    if (is.na(masks[1])) break
   }
 
   d$means()
+}
+
+
+#' Compute correlations for the largest possible mask given the input vectors,
+#'
+#' @param vs Input vectors
+#' @param mask_ranges List of start, end tuples for each of the mask groups
+#' @return A list of the correlation and the encountered mask.
+#' @export
+best_masked_correlation <- function(vs, mask_ranges) {
+
+  N <- length(vs)
+  masks <- sapply(vs, detect_mask, mask_ranges = mask_ranges)
+
+  if (any(is.na(masks))) return()
+
+  correlations <- matrix(list(), nrow=N, ncol=N)
+
+  for (i in 1:(N-1)) {
+    m1 <- masks[i]
+    for (j in (i+1):N) {
+      m2 <- masks[j]
+      m <- bitwAnd(m1, m2)
+      # generate a vector here so that we can re-use the standard function
+      # which expects pre-computed correlations for all possible masks
+      correlations[[i, j]] <- numeric(m)
+      correlations[[i, j]][m] <- masked_corr(vs[[i]], vs[[j]], m, mask_ranges)
+    }
+  }
+
+  mean_correlation_for_mask_set(masks, correlations, length(mask_ranges))
 }
 
 #' Find mask with most keys set
@@ -102,6 +145,7 @@ all_correlations <- function(vs, mask_ranges) {
 #' @param masks List of masks
 #' @return The items with the most set bits. Will raise an error if more
 #'  than one items have the same number of set bits
+#' @export
 which.most_set_bits <- function(masks) {
   counts <- sapply(masks, count_set_bits)
   m <- max(counts)

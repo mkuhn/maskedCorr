@@ -19,7 +19,45 @@ contains_singleton <- function(vs, N_bits) {
 }
 
 #' count the number of bits set
+#' @export
 count_set_bits <- function(vs) {
     .Call('maskedCorr_count_set_bits', PACKAGE = 'maskedCorr', vs)
+}
+
+#' Convert the mask to an integer for easier handling with dplyr
+#' NOTE! We have at most 6 elements in the mask, and 4 bits = 24 bits.
+#' so we're safe.
+#' @param masks Integer vector of masks
+#' @param bits_per_mask Number of bits in each mask
+#' @export
+masks_to_int <- function(masks, bits_per_mask) {
+    .Call('maskedCorr_masks_to_int', PACKAGE = 'maskedCorr', masks, bits_per_mask)
+}
+
+#' Split from integer value into masks
+#' @param int_masks encoded masks
+#' @param bits_per_mask Number of bits in each mask
+#' @param N_masks Number of masks
+#' @export
+int_to_masks <- function(int_masks, bits_per_mask, N_masks) {
+    .Call('maskedCorr_int_to_masks', PACKAGE = 'maskedCorr', int_masks, bits_per_mask, N_masks)
+}
+
+#' Cycle through all possible mask combinations by incrementing the mask
+#'
+#' @param mask Input mask
+#' @param N threshold for setting one part of the mask to zero and moving to next
+#' @param skip_singletons If set, do not return singletons
+#' @param skip_zeros If set, do not return masks where any submask is 0
+#' @return The incremented mask, or \code{NA} if all combinations have been reached
+increment_mask <- function(mask, N_bits, skip_singletons, skip_zeros) {
+    .Call('maskedCorr_increment_mask', PACKAGE = 'maskedCorr', mask, N_bits, skip_singletons, skip_zeros)
+}
+
+#' Generate vector of masks containing all intersections of bits
+#' @param masks input set of masks
+#' @return same as upper.tri of outer(masks, masks), bitwAnd)
+masks_to_target <- function(masks) {
+    .Call('maskedCorr_masks_to_target', PACKAGE = 'maskedCorr', masks)
 }
 

@@ -4,12 +4,15 @@
 \alias{all_correlations}
 \title{Compute correlations for all possible mask combinations given the input vectors.}
 \usage{
-all_correlations(vs, mask_ranges)
+all_correlations(vs, mask_ranges, masks_filter = NULL)
 }
 \arguments{
 \item{vs}{Input vectors}
 
 \item{mask_ranges}{List of start, end tuples for each of the mask groups}
+
+\item{masks_filter}{optional: set of masks (of the comparison, not the input mask) for which
+to return correlations, supply as integer-encoded mask (not as vector)}
 }
 \value{
 A dictionary of mask combinations and the respective correlations.

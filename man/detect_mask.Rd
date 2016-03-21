@@ -12,8 +12,8 @@ detect_mask(v, mask_ranges)
 \item{mask_ranges}{List of start, end tuples for each of the mask groups}
 }
 \value{
-A number in which the i-th bit corresponds to the presence of the i-th mask group,
- or NA if one of the mask groups is a mixture of valid numbers and NAs.
+A number in which the i-th bit corresponds to the absence of NAs
+ in the i-th mask group,
 }
 \description{
 Detect mask groups in a vector
