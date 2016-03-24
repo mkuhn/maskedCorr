@@ -6,6 +6,7 @@
 #'  in the i-th mask group,
 #' @examples
 #' detect_mask(c(NA,NA,3:10), list(c(1,2), c(3,6), c(7,10)))
+#' @export
 detect_mask <- function(v, mask_ranges) {
   mask <- 0
   for (i in 1:length(mask_ranges)) {

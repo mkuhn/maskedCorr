@@ -3,6 +3,7 @@
 export(all_correlations)
 export(best_masked_correlation)
 export(count_set_bits)
+export(detect_mask)
 export(int_to_masks)
 export(masked_corr)
 export(masks_to_int)

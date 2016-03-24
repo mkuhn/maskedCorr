@@ -106,7 +106,8 @@ all_correlations <- function(vs, mask_ranges, masks_filter = NULL) {
     if (is.na(masks[1])) break
   }
 
-  d$means()
+  d$inplace_mean()
+  d
 }
 
 
